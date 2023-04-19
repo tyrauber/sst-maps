@@ -7,8 +7,8 @@ dotenv.config();
 
 export function Bucket({ stack }: StackContext) {
     let bucket;
-    if(!!(process.env.S3_BUCKET)){
-        bucket = s3.Bucket.fromBucketName(stack, "Bucket", process.env.S3_BUCKET)
+    if(!!(process.env.AWS_BUCKET)){
+        bucket = s3.Bucket.fromBucketName(stack, "Bucket", process.env.AWS_BUCKET)
         stack.addOutputs({
             BUCKET: bucket.bucketName,
             BUCKET_ARN: bucket.bucketArn

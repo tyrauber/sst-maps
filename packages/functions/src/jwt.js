@@ -145,6 +145,9 @@ function handler(event) {
     var request = event.request;
     var response = event.response;
     var host = event.context.distributionDomainName;
+    if(request.headers.host && request.headers.host.value){
+        host = request.headers.host.value;
+    }
     var payload = Object.assign({
         role: 'guest',
         iat: Math.floor(Date.now() / 1000),

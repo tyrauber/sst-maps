@@ -7,8 +7,8 @@ import { Next } from "./stacks/Next";
 export default {
   config(_input) {
     return {
-      name: "sst-maps",
-      region: "us-east-1",
+      name: process.env.APP_NAME || "sst-maps",
+      region: process.env.AWS_REGION || "us-east-1",
     };
   },
   stacks(app) {
