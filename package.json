@@ -2,26 +2,27 @@
   "name": "sst-maps",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
   "scripts": {
-    "dev": "AWS_PROFILE=theoutbound sst dev",
-    "build": "AWS_PROFILE=theoutbound sst build",
-    "deploy": "AWS_PROFILE=theoutbound sst deploy",
-    "remove": "AWS_PROFILE=theoutbound sst remove",
-    "console": "AWS_PROFILE=theoutbound sst console",
+    "setup": "sh setup.sh",
+    "dev": "sst dev",
+    "build": "sst build",
+    "deploy": "sst deploy",
+    "remove": "sst remove",
+    "console": "sst console",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "sst": "^2.5.2",
+    "@tsconfig/node16": "^1.0.3",
     "aws-cdk-lib": "2.72.1",
     "constructs": "10.1.156",
-    "typescript": "^5.0.4",
-    "@tsconfig/node16": "^1.0.3"
+    "sst": "^2.5.2",
+    "typescript": "^5.0.4"
   },
   "workspaces": [
     "packages/*"
   ],
   "dependencies": {
-    "@sls-next/lambda-at-edge": "^3.7.0"
+    "@sls-next/lambda-at-edge": "^3.7.0",
+    "dotenv": "^16.0.3"
   }
 }
