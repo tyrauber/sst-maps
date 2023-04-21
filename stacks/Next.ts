@@ -30,7 +30,7 @@ export function Next({ stack }: StackContext) {
         // JWT OPTIONS:
         var JWT_SESSION_ID = "${process.env.JWT_SESSION_ID || '_sst_maps_session_id'}";
         var JWT_SECRET_KEY = "${process.env.JWT_SECRET_KEY || 'SUPER_SECRET_KEY_THAT_SHOULD_BE_CHANGED'}";
-        var JWT_PAYLOAD =  "${JSON.parse(process.env.JWT_PAYLOAD || '{"exp": "3600"}')}";
+        var JWT_PAYLOAD =  "${process.env.JWT_PAYLOAD || "{'exp': '3600'}"}";
         // iss: 'Issuer', sub: 'Subject', aud: 'Audience', exp: 'Expiration Time', nbf: 'Not Before', iat: 'Issued At', jti: 'JWT ID', etc.
         ${data}
     `),

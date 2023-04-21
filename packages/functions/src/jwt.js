@@ -128,7 +128,7 @@ function extractToken(request) {
     var cookieToken;
   
     for (var domain in cookies) {
-        if (cookies[domain] && cookies[domain].name === JWT_SESSION_ID) {
+        if (cookies[domain] && domain === JWT_SESSION_ID) {
             cookieToken = cookies[domain].value;
             break;
         }
@@ -141,12 +141,15 @@ function extractToken(request) {
     return bearerToken || cookieToken || tokenQueryParam || null;
 };
 
-function handler(event) {
-    var request = event.request;
-    var response = event.response;
+function Payload (event) {
     var host = event.context.distributionDomainName;
-    if(request.headers.host && request.headers.host.value){
-        host = request.headers.host.value;
+    var payload = {"exp": 3600};
+    try{
+        payload = JSON.parse(JWT_PAYLOAD);
+    } catch (e){}
+
+    if(event.request && event.request.headers.host && event.request.headers.host.value){
+        host = event.request.headers.host.value;
     }
     var payload = Object.assign({
         role: 'guest',
@@ -155,8 +158,24 @@ function handler(event) {
         iss: host, 
         aud: host
     },
-        ...(JWT_PAYLOAD || {})
-    )
+        ...payload
+    );
+    return payload;
+}
+
+function test(event){
+    var response = {
+        statusCode: 302,
+        statusDescription: 'Found',
+        body: JSON.stringify({event, jwtToken})
+    }
+    return response;
+}
+
+function handler(event) {
+    var request = event.request;
+    var response = event.response;
+    var payload = Payload(event);
     if (response){
         if(response.statusDescription === "OK"){
             var token = jwt_encode(payload, 
@@ -168,12 +187,12 @@ function handler(event) {
             response['cookies'] = response['cookies'] || {};
             response['cookies'][JWT_SESSION_ID] = {
                 "value" : token,
-                "attributes": `Path=/; Domain=${host}; Expires=${(payload.exp || 3600)}`
+                "attributes": `Path=/; Domain=${payload.iss}; Expires=${(payload.exp || 3600)}`
             }
             response.headers['authorization'] = {value: `BEARER ${token}`};
         }
         return response;
-    } else if (request && request.headers.referer && request.headers.referer.value.match(host)){
+    } else if (request && request.headers.referer && request.headers.referer.value.match(payload.iss)){
         return request 
     } else if (request) {
         var jwtToken = extractToken(request);
