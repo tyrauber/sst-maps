@@ -14,14 +14,27 @@ export function Api({ stack }: StackContext) {
             }
         },
         routes: {
-            "GET /v1/private": {
-                function: "packages/functions/src/private.main"
-            },
-            "GET /v1/public": {
-                function: "packages/functions/src/public.main"
-            },
+            // "GET /v1/public/{proxy+}": {
+            //     function: "packages/functions/src/public.main"
+            // },
             "GET /v1/tiles/{proxy+}":{
                 function: "packages/functions/src/tiles.main"
+            },
+            "GET /v1/postgis/{proxy+}":{
+                function: {
+                    handler: "packages/functions/src/postgis.handler",
+                    environment: {
+                        POSTGRES_CONNECTION: process.env.DATABASE_URL,
+                        BASE_PATH: "/v1/postgis",
+                        // CACHE_EXPIRESIN: 3600,
+                        // CACHE_SERVERCACHE: 3600
+                    },
+                    copyFiles: [
+                        //{"from": "./packages/postgis/dist/static", "to": "packages/postgis/src/static"},
+                        {"from": "./packages/postgis/dist/routes", "to": "packages/functions/src/routes"},
+                        //{"from": "./packages/postgis/dist/global-bundle.pem", "to": "packages/postgis/src/global-bundle.pem"},
+                    ]
+                }
             },
             // $default: {
             //     function: "packages/functions/src/tiles.main",

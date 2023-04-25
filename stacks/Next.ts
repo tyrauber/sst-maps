@@ -60,8 +60,18 @@ export function Next({ stack }: StackContext) {
                                 eventType: FunctionEventType.VIEWER_RESPONSE,
                             },
                         ],
+                        forwardedValues: {
+                            headers: ['*'],
+                            queryString: true,
+                            cookies: {
+                                forward: 'all',
+                            },
+                            headers: {
+                                host: false,
+                            },
+                        },
                     },
-                  },
+                },
             }
         },
         bind: [api],

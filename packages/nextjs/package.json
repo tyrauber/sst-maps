@@ -12,6 +12,7 @@
     "@sst-maps/functions": "*",
     "aws-sdk": "^2.991.0",
     "maplibre-gl": "^2.4.0",
+    "maplibre-gl-inspect": "^0.0.6",
     "next": "13.3.0",
     "open-next": "0.9.0",
     "pmtiles": "^2.7.1",
