@@ -23,6 +23,20 @@ export function Api({ stack }: StackContext) {
             "GET /v1/tiles/{proxy+}":{
                 function: "packages/functions/src/tiles.main"
             },
+            "GET /v1/postgis/{proxy+}":{
+                function: {
+                    handler: "packages/functions/src/postgis.handler",
+                    environment: {
+                        POSTGRES_CONNECTION: process.env.DATABASE_URL,
+                        BASE_PATH: "/v1/postgis"
+                    },
+                    copyFiles: [
+                        //{"from": "./packages/postgis/dist/static", "to": "packages/postgis/src/static"},
+                        {"from": "./packages/postgis/dist/routes", "to": "packages/functions/src/routes"},
+                        //{"from": "./packages/postgis/dist/global-bundle.pem", "to": "packages/postgis/src/global-bundle.pem"},
+                    ]
+                }
+            },
             // $default: {
             //     function: "packages/functions/src/tiles.main",
             //     authorizer: "none",

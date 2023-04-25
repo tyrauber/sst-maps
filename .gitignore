@@ -6,7 +6,7 @@ node_modules
 .build
 .next
 .open-next
-
+dist
 
 # misc
 .DS_Store
