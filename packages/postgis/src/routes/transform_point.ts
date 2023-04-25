@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyRequest, FastifyReply, RouteOptions } from 'fastify';
+import { FastifyPluginAsync, FastifyRequest, FastifyReply } from 'fastify';
 
 // route schema
 const schema = {
@@ -64,22 +64,30 @@ const sql = (params: Params, query: Query) => {
 };
 
 // create route
-export default function (fastify: FastifyInstance, opts: RouteOptions, next: () => void) {
+const route: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   fastify.route({
     method: 'GET',
     url: '/transform_point/:point',
     schema: schema,
-    handler: async function (request: FastifyRequest, reply: FastifyReply) {
+    handler:  async function (request: FastifyRequest, reply: FastifyReply) {
+
       const { params, query } = request;
       const queryString = query as Query;
       const paramsObject = params as Params;
-      const client = await fastify.pg.connect();
-      const result = await client.query(sql(paramsObject, queryString));
-      client.release();
-      reply.send(result.rows);
-    },
+
+      const client = await fastify.pg.pool.connect();
+        try {
+          const res = await client.query(sql(paramsObject, queryString));
+            return res.rows;
+        } catch (e){
+            console.log(e)
+            return e;
+        } finally {
+            client.release(true);
+        }
+    }
   });
-  next();
 };
 
+export default route;
 export const autoPrefix = process.env.BASE_PATH || "/v1";

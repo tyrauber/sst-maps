@@ -1,5 +1,4 @@
-import { FastifyPluginAsync, FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
-import { PoolClient } from 'pg';
+import { FastifyPluginAsync, FastifyRequest, FastifyReply } from 'fastify';
 
 // route schema
 const schema = {
@@ -105,10 +104,8 @@ interface PgRow {
   geojson: JSON
 }
 
-
-
 // create route
-const example: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
+const route: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   fastify.route({
     method: 'GET',
     url: '/geojson/:table',
@@ -136,5 +133,5 @@ const example: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     },
   });
 }
-export default example;
+export default route;
 export const autoPrefix = process.env.BASE_PATH || "/v1";

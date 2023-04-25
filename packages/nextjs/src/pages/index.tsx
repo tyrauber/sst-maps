@@ -101,19 +101,24 @@ const Map = () => {
 
         //https://github.com/acalcutt/maplibre-gl-inspect
         map.current.addControl(new MaplibreInspect({
+            queryParameters: {
+                layers: ['osm_poi_points', 'osm_trails']
+            },
             showMapPopup: true,
             showInspectMapPopup: true,
             showInspectButton: false,
             showMapPopupOnHover: false,
             showInspectMapPopupOnHover: false,
-            renderPopup: function (features) {
+            renderPopup: function (features:any) {
                 var result = '';
                 for (const feature of features) {
-                    console.log(feature)
-                    result += `<h3>${feature.source}: ${feature.sourceLayer}</h3>`
+                    console.log({ feature })
+                    result += `<h3>${feature.sourceLayer}</h3>`
+                    result += `<table class="popup" className="popup">`
                     for (const key of Object.keys(feature.properties).sort().reverse()) {
-                        result += `<p>${key}: <i>${feature.properties[key]}</i></p>`;
+                        result += `<tr><td>${key}</td><td>${feature.properties[key]}</td></tr>`;
                     }
+                    result += '</table>';
                 }
                 return result;
             },

@@ -107,32 +107,32 @@ app.register(
 );
 
 const fastifyCaching = require('@fastify/caching');
-app.register(
-  fastifyCaching,
-  {privacy: fastifyCaching.privacy.NOCACHE}
-)
-// // CACHE SETTINGS
-// const cachingOptions = {
-//   privacy: process.env.CACHE_PRIVACY || 'private',
-//   expiresIn: process.env.CACHE_EXPIRESIN || 3600,
-//   serverExpiresIn: process.env.CACHE_SERVERCACHE
-// };
 // app.register(
-//   require('@fastify/caching'), cachingOptions
-// );
+//   fastifyCaching,
+//   {privacy: fastifyCaching.privacy.NOCACHE}
+// )
+// CACHE SETTINGS
+const cachingOptions = {
+  privacy: process.env.CACHE_PRIVACY || 'private',
+  expiresIn: process.env.CACHE_EXPIRESIN || 3600,
+  serverExpiresIn: process.env.CACHE_SERVERCACHE
+};
+app.register(
+  fastifyCaching, cachingOptions
+);
 
 // CORS
 const corsOptions = {};
 app.register(require('@fastify/cors'), corsOptions);
 
-// // OPTIONAL RATE LIMITER
-// if ("RATE_MAX" in process.env) {
-//   const rateLimitOptions = {
-//     max: Number(process.env.RATE_MAX),
-//     timeWindow: '1 minute'
-//   };
-//   app.register(import('@fastify/rate-limit'), rateLimitOptions);
-// }
+// OPTIONAL RATE LIMITER
+if ("RATE_MAX" in process.env) {
+  const rateLimitOptions = {
+    max: Number(process.env.RATE_MAX),
+    timeWindow: '1 minute'
+  };
+  app.register(import('@fastify/rate-limit'), rateLimitOptions);
+}
 
 // app.register(fp(docsPlugin))
 

@@ -1,6 +1,6 @@
-import { FastifyPluginAsync, FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
+import { FastifyPluginAsync, FastifyRequest, FastifyReply } from 'fastify';
 import zlib from "zlib";
-import { PoolClient } from 'pg';
+
 // route schema
 const schema = {
   description:
@@ -88,7 +88,7 @@ const sql = (params: Params, query: Query) => {
 };
 
 // create route
-const example: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
+const route: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   fastify.route({
     method: 'GET',
     url: '/mvt/:table/:z/:x/:y.pbf',
@@ -97,22 +97,12 @@ const example: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       const { params, query } = request;
       const queryString = query as Query;
       const paramsObject = params as Params;
-
+      const sqlQuery = sql(paramsObject, queryString);
       const client = await fastify.pg.pool.connect();
       try {
-          const result = await client.query(sql(paramsObject, queryString));
+          const result = await client.query(sqlQuery);
           try{
             if(result.rows[0] && result.rows[0].mvt){
-              // const data = zlib.gzipSync(result.rows[0].mvt);
-              // reply.header('Content-Encoding', 'gzip');
-              // reply.header('Content-Type', 'application/x-protobuf');
-              // //reply.header('Content-Type', 'application/vnd.mapbox-vector-tile');
-              // return Buffer.from(data).toString("base64")
-             
-              // reply.header('Content-Type', 'application/vnd.mapbox-vector-tile');
-              // return result.rows[0].mvt;
-
-              // Set the appropriate headers for MVT data
               reply.header('Content-Type', 'application/vnd.mapbox-vector-tile');
               reply.header('Content-Encoding', 'gzip');
               return zlib.gzipSync(Buffer.from(result.rows[0].mvt));
@@ -128,5 +118,5 @@ const example: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     },
   });
 }
-export default example;
+export default route;
 export const autoPrefix = process.env.BASE_PATH || "/v1";

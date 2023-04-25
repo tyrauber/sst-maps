@@ -1,5 +1,4 @@
-import { FastifyInstance, FastifyRequest, FastifyReply, RouteOptions } from 'fastify';
-import { PoolClient } from 'pg';
+import { FastifyPluginAsync, FastifyRequest, FastifyReply } from 'fastify';
 
 // route schema
 const schema = {
@@ -66,46 +65,33 @@ const sql = (params: Params, query: Query) => {
 
   -- Optional filter
   ${query.filter ? `WHERE ${query.filter}` : ''}
-
   `
 }
 
-// Create route
-export default function (fastify: FastifyInstance, opts: RouteOptions, next: () => void) {
+// create route
+const route: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   fastify.route({
     method: 'GET',
     url: '/centroid/:table',
     schema: schema,
-    handler: function (request: FastifyRequest, reply: FastifyReply) {
-
+    handler: async function (request: FastifyRequest, reply: FastifyReply) {
       const { params, query } = request;
       const queryString = query as Query;
       const paramsObject = params as Params;
 
-      fastify.pg.connect(onConnect);
-
-      function onConnect(
-        err: Error | null,
-        client: PoolClient,
-        release: () => void
-      ): void {
-        if (err) {
-          request.log.error(err);
-          reply.code(500).send({ error: 'Database connection error.' });
-          return;
-        }
-      
-        client.query(
-          sql(paramsObject, queryString),
-          function onResult(err: Error | null, result: { rows: any[] }) {
-            release();
-            reply.send(err || result.rows);
+      const client = await fastify.pg.pool.connect();
+      try {
+          const result = await client.query(sql(paramsObject, queryString));
+          try{
+            return result.rows
+          } catch (e){
+            reply.code(204).send();
           }
-        );
+      } finally {
+        client.release(true);
       }
-    }
+    },
   });
-  next();
 }
-
+export default route;
 export const autoPrefix = process.env.BASE_PATH || "/v1";

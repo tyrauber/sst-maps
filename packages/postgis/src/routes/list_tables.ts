@@ -1,5 +1,4 @@
-import {  FastifyPluginAsync, FastifyInstance, FastifyRequest, FastifyReply, RouteOptions, FastifyPluginOptions } from 'fastify';
-import { PoolClient } from 'pg';
+import { FastifyPluginAsync, FastifyRequest, FastifyReply } from 'fastify';
 
 // Route schema
 const schema = {
@@ -47,7 +46,7 @@ const sql = (params: Params, query: Query) => {  return `
   `;
 };
 
-const example: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
+const route: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   fastify.route({
     method: 'GET',
     url: '/list_tables',
@@ -72,5 +71,5 @@ const example: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   });
 };
 
-export default example;
+export default route;
 export const autoPrefix = process.env.BASE_PATH || "/v1";
