@@ -15,14 +15,16 @@
     "@tsconfig/node16": "^1.0.3",
     "aws-cdk-lib": "2.72.1",
     "constructs": "10.1.156",
-    "sst": "^2.5.2",
-    "typescript": "^5.0.4"
+    "sst": "^2.7.2",
+    "typescript": "^5.0.4",
+    "dotenv": "^16.0.3"
+  },
+  "resolutions": {
+    "aws-cdk-lib": "2.72.1",
+    "sst": "2.7.2",
+    "typescript": "5.0.4"
   },
   "workspaces": [
     "packages/*"
-  ],
-  "dependencies": {
-    "@sls-next/lambda-at-edge": "^3.7.0",
-    "dotenv": "^16.0.3"
-  }
+  ]
 }
