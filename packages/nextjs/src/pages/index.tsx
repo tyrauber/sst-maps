@@ -112,7 +112,6 @@ const Map = () => {
             renderPopup: function (features:any) {
                 var result = '';
                 for (const feature of features) {
-                    console.log({ feature })
                     result += `<h3>${feature.sourceLayer}</h3>`
                     result += `<table class="popup" className="popup">`
                     for (const key of Object.keys(feature.properties).sort().reverse()) {

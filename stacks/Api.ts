@@ -24,7 +24,7 @@ export function Api({ stack }: StackContext) {
                 function: {
                     handler: "packages/functions/src/postgis.handler",
                     environment: {
-                        POSTGRES_CONNECTION: process.env.DATABASE_URL,
+                        POSTGRES_CONNECTION: process.env.POSTGRES_CONNECTION,
                         BASE_PATH: "/v1/postgis",
                         // CACHE_EXPIRESIN: 3600,
                         // CACHE_SERVERCACHE: 3600
